@@ -378,7 +378,6 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"patch.26": "minimal：去掉默认身份并打开 inject",
 			"patch.28": "dsh-liangshen（梁神）：phase-1 保留 dsh-purge / dshpg 段",
 			"patch.70": "极简模式终端不再禁止网络",
-			"patch.71": "梁神去掉官方身份句",
 			"patch.29": "dsh-tool-web：外部 untrusted 拦截→可执行",
 			"patch.30": "dsh-hooks-claude-code：deny→allow",
 			"patch.31": "dsh-hooks-codex：deny→allow",
@@ -400,7 +399,6 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"patch.49": "OAuth 不再伪装 claude-cli",
 			"patch.50": "跨会话引用不再标不可信",
 			"patch.51": "新会话保持完全权限",
-			"patch.52": "会话日志默认不上传",
 			"patch.53": "网页提示去掉禁止另开服务器",
 			"patch.54": "交付物提示去掉多余禁止",
 			"patch.55": "每一步替换第一条系统提示",
@@ -419,13 +417,11 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"patch.68": "回退后缺 content 不中断",
 			"patch.69": "deepseek-flash 保持官方 in-history",
 			"patch.72": "Messages 的 system 用当前系统提示",
-			"patch.73": "极简 bash 去掉误留的镜像说明",
 			"patch.74": "首发前先挂默认提示词",
 			"patch.75": "回退把已完成任务收回成未开始",
 			"patch.76": "unrestricted 预设去掉身份句",
 			"patch.77": "回退标记到达时丢弃已发送消息",
 			"patch.78": "补丁文件缺失时从 .bak 恢复",
-			"patch.80": "恢复官方极简工具表",
 			"patch.82": "主进程兜底 DSH_PROFILE=desktop",
 			"patch.83": "host 信号杀时不报错不弹对话框",
 			"patch.84": "host code=0 正常退出不报错 (消除 stopped 对话框)",
@@ -445,6 +441,13 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"rewind.once.hint": "把这一轮发出去的那句放回输入框，并清掉这一轮",
 			"rewind.round": "回退上一轮",
 			"rewind.round.hint": "把这一轮发出去的那句放回输入框；子代理也只撤这一轮",
+			"mode.title": "补丁档",
+			"mode.hint": "core 只做核心注入：不改审批、沙箱、fs 围栏、hooks，也不改工具调用习惯；full 是现在这套完整注入 + 清洗。切换一律先全量还原成官方原版、再按目标档整体重打（不做差集）；只想从 core 补到 full 时，直接点下面的「应用」即可，不必换档。之后需要重启宿主才在进程里生效。",
+			"mode.core": "core · 只注入",
+			"mode.full": "full · 完整清洗",
+			"mode.confirm": "切换补丁档会把已清洗的文件全部还原成官方原版，再按目标档整体重打一遍（不是只补差集），随后需要重启宿主。继续？",
+			"mode.saved": "已切到 {mode}，重启后生效",
+			"mode.count": "当前 {total} 条",
 			"hooksDeny.title": "Hooks 拦截",
 			"hooksDeny.bypass": "放行 hooks 的 deny / ask（补丁 30 / 31 / 64 / 65）",
 			"hooksDeny.hint": "关掉后，用户自己的 PreToolUse / UserPromptSubmit / Stop hook 的 deny 会按官方逻辑生效。官方 ask 分支本身是空操作，关开关不会弹出审批框。改完后点「应用」并重启才写进宿主。",
@@ -718,7 +721,6 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"patch.26": "minimal: strip identity, open inject",
 			"patch.28": "dsh-liangshen: keep dsh-purge / dshpg in phase-1",
 			"patch.70": "Minimal shell drops the no-network line",
-			"patch.71": "Liangshen drops the stock identity line",
 			"patch.29": "dsh-tool-web: untrusted framing → usable data",
 			"patch.30": "dsh-hooks-claude-code: deny→allow",
 			"patch.31": "dsh-hooks-codex: deny→allow",
@@ -740,7 +742,6 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"patch.49": "OAuth no longer mimics claude-cli",
 			"patch.50": "Session references are not marked untrusted",
 			"patch.51": "Fresh session stays on full access",
-			"patch.52": "Session log upload off by default",
 			"patch.53": "Web prompt drops do-not-start",
 			"patch.54": "Deliverable prompt drops extra prohibition",
 			"patch.55": "Replace the first system prompt every step",
@@ -759,13 +760,11 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"patch.68": "Missing content after rewind no longer ends the turn",
 			"patch.69": "deepseek-flash keeps the official in-history flag",
 			"patch.72": "Messages system field uses the current system prompt",
-			"patch.73": "Minimal preset drops stray mirror sentence",
 			"patch.74": "Hang default prompt before first assemble",
 			"patch.75": "Rewind resets completed todos to pending",
 			"patch.76": "Unrestricted preset: strip identity sentence",
 			"patch.77": "Rewind marker drops already-sent messages",
 			"patch.78": "Restore missing overlay from .bak backup",
-			"patch.80": "Restore official minimal tool plugins",
 			"patch.82": "Fallback DSH_PROFILE=desktop in main process",
 			"patch.83": "Don't fail on signal kill (no crash dialog)",
 			"patch.84": "Don't fail on code=0 clean exit (no stopped dialog)",
@@ -785,6 +784,13 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"rewind.once.hint": "Put this round's message back in the box and drop only this round",
 			"rewind.round": "Undo last round",
 			"rewind.round.hint": "Put this round's message back in the box; subagents drop only this round",
+			"mode.title": "Patch mode",
+			"mode.hint": "core keeps the injection chain only: approval, sandbox, the fs fence and hooks stay official, and tool behaviour is untouched. full is the complete inject + clean set. Switching always restores every cleaned file to the official original first, then re-applies the whole target set (no diff-only update); to go from core up to full, just press Apply below instead of switching. A host restart is needed before it takes effect.",
+			"mode.core": "core · inject only",
+			"mode.full": "full · complete clean",
+			"mode.confirm": "Switching the patch mode restores every cleaned file to the official original, then re-applies the whole target set (no diff-only update); a host restart follows. Continue?",
+			"mode.saved": "Switched to {mode}; restart to apply",
+			"mode.count": "{total} patches",
 			"hooksDeny.title": "Hook interception",
 			"hooksDeny.bypass": "Bypass hook deny / ask (patches 30 / 31 / 64 / 65)",
 			"hooksDeny.hint": "When off, your own PreToolUse / UserPromptSubmit / Stop hook deny runs as the official host wrote it. The official ask branch is a no-op; turning this off will not show an approval dialog. Click Apply and restart to write the host files.",
@@ -1178,6 +1184,73 @@ body:not([data-ds-dark-theme]) .dshp-auth-ops button.primary{background:var(--ds
 					) : null,
 				);
 			});
+		}
+
+		function ModeSection({ onSaved }) {
+			const t = useT();
+			const [cfg, setCfg] = useState(null);
+			const [notice, setNotice] = useState({ kind: "idle", text: "" });
+			const [busy, setBusy] = useState(false);
+
+			useEffect(() => {
+				apiJson("/dsh-purge/patch-mode")
+					.then((d) => {
+						if (d && d.ok) {
+							setCfg({
+								mode: d.mode,
+								total: d.total,
+								available: Array.isArray(d.available) && d.available.length ? d.available : ["core", "full"],
+							});
+						}
+					})
+					.catch(() => {});
+			}, []);
+
+			const save = (mode) => {
+				if (!cfg || busy || cfg.mode === mode) return;
+				const ask = typeof window !== "undefined" && typeof window.confirm === "function"
+					? window.confirm(t("mode.confirm"))
+					: true;
+				if (!ask) return;
+				setBusy(true);
+				apiJson("/dsh-purge/patch-mode", {
+					method: "POST",
+					headers: { "content-type": "application/json" },
+					body: JSON.stringify({ mode }),
+				})
+					.then((d) => {
+						if (d && d.ok) {
+							setCfg((prev) => Object.assign({}, prev || {}, { mode: d.mode, total: d.total }));
+							setNotice({ kind: "ok", text: t("mode.saved", { mode: d.mode }) });
+							if (typeof onSaved === "function") onSaved();
+						} else {
+							setNotice({ kind: "error", text: t("err.save", { error: (d && d.error) || "" }) });
+						}
+					})
+					.catch((e) => setNotice({ kind: "error", text: t("err.save", { error: e.message }) }))
+					.finally(() => setBusy(false));
+			};
+
+			if (!cfg) return null;
+			const modes = cfg.available;
+			return h("div", { className: "dshp-cr", style: { marginTop: 12 } },
+				h("div", { className: "dshp-sub" },
+					h("h4", null, t("mode.title")),
+					noticeNode(notice),
+				),
+				h("p", { className: "dshp-hint", style: { margin: "0 0 4px", color: "var(--dshp-mute)", fontSize: 12 } }, t("mode.hint")),
+				h("div", { className: "dshp-cr-row" },
+					modes.map((mode) => h(Btn, {
+						key: mode,
+						kind: cfg.mode === mode ? "primary" : undefined,
+						disabled: busy,
+						"aria-pressed": cfg.mode === mode,
+						onClick: () => save(mode),
+					}, t("mode." + mode))),
+					h("span", { className: "dshp-hint", style: { marginLeft: 8, fontSize: 12, color: "var(--dshp-mute)" } },
+						t("mode.count", { total: String(cfg.total == null ? "" : cfg.total) })),
+				),
+			);
 		}
 
 		function HooksDenySection({ onSaved }) {
@@ -1943,6 +2016,7 @@ body:not([data-ds-dark-theme]) .dshp-auth-ops button.primary{background:var(--ds
 				),
 				h("div", { className: "dshp-bar", "aria-hidden": "true" }, h("i", { style: { width: pct + "%" } })),
 				h(PatchGroups, { state: s }),
+				h(ModeSection, { onSaved: loadAll }),
 				h(HooksDenySection, { onSaved: loadAll }),
 				h("div", { className: "dshp-row", style: { marginTop: 14 } },
 					h(Btn, { kind: "primary", disabled: patchBusy || uninstallBusy || !overrideLoaded, onClick: () => doAction("apply", "action.apply") }, patchBusy ? t("btn.apply.busy") : t("btn.apply")),

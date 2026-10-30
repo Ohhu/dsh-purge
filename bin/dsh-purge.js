@@ -9,6 +9,7 @@ function printStatus(state) {
   const out = [];
   out.push("dsh-purge 状态 / Status");
   out.push("  宿主 / surface " + (state.surface || "web"));
+  out.push("  补丁档 / mode  " + (state.patch_mode || core.currentPatchMode()) + "  (core = 只注入不动权限 / full = 完整清洗)");
   out.push("  DSH_HOME      " + state.dsh_home);
   if (state.desktop_install) out.push("  桌面安装       " + state.desktop_install);
   if (state.ai_base) {
@@ -24,8 +25,8 @@ function printStatus(state) {
   out.push(`  注入文件       ${state.override_path}`);
   out.push(`  注入状态       ${state.override_status}`);
   out.push("");
-  out.push(`  补丁 ${state.patches_applied}/${core.ALL_PATCHES.length} 已清洗, ${state.patches_pending} 待清洗`);
-  for (const p of core.ALL_PATCHES) {
+  out.push(`  补丁 ${state.patches_applied}/${core.activePatches().length} 已清洗, ${state.patches_pending} 待清洗`);
+  for (const p of core.activePatches()) {
     const s = state.patch_status[p.id];
     const mark = s === "applied" ? "✓" : s === "pending" ? "✗" : "·";
     out.push(`    ${mark} [#${String(p.id).padEnd(2)}] ${p.name.padEnd(30)} ${p.layer}/${p.layer_en} — ${s}`);
@@ -36,7 +37,9 @@ function printStatus(state) {
 }
 
 async function main() {
-  const mode = args.find((a) => ["--apply", "--revert", "--uninstall", "--status", "--edit", "--help"].includes(a));
+  const mode = args.find((a) => ["--apply", "--revert", "--uninstall", "--status", "--edit", "--help", "--mode"].includes(a));
+  const modeAt = args.indexOf("--mode");
+  const wantMode = modeAt >= 0 ? String(args[modeAt + 1] || "").trim().toLowerCase() : "";
 
   if (mode === "--help" || args.includes("-h")) {
     console.log(`dsh-purge 用法:
@@ -45,6 +48,7 @@ async function main() {
   dsh-purge --revert     回滚还原
   dsh-purge --uninstall  卸载插件（已应用则先还原）
   dsh-purge --edit       编辑注入文件 prompt-inject.md
+  dsh-purge --mode core|full  切换补丁档并重打（会还原再应用）
   dsh-purge --help       帮助`);
     return;
   }
@@ -53,7 +57,26 @@ async function main() {
   console.log(printStatus(state));
   console.log("");
 
-  if (mode === "--apply") {
+  if (mode === "--mode") {
+    if (!core.PATCH_MODE_NAMES.includes(wantMode)) {
+      console.log("[ERROR] --mode 需要 core 或 full");
+      process.exit(1);
+    }
+    if (!state.ai_base) {
+      console.log("[ERROR] " + core.missingAiBaseMessage());
+      process.exit(1);
+    }
+    const saved = core.setPatchMode(wantMode);
+    console.log(`  补丁档 → ${saved.mode}（${saved.path}）`);
+    const reapply = await import("../lib/reapply.js");
+    const result = await reapply.reapplyInstalled({ preserveClientBundles: false });
+    if (!result || result.ok !== true) {
+      console.log("[ERROR] 重打失败：" + ((result && result.error) || "unknown"));
+      process.exit(1);
+    }
+    console.log(`  已按 ${saved.mode} 重打：applied=${result.applied} failed=${result.failed} reverted=${result.reverted}`);
+    console.log("  重启 dsh 生效。");
+  } else if (mode === "--apply") {
     if (!state.ai_base) {
       console.log("[ERROR] " + core.missingAiBaseMessage());
       console.log("  fix: 把 DSH_BASE 指到含 dsh-agent-instructions/lib 的 @deepseek-ai 目录");

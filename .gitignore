@@ -32,3 +32,6 @@ default-prompt-inject.md
 /official-harness-payload.7z
 *.asar
 *.asar.bak
+
+# 本机回滚备份（会话日志 / workspace.json / 宿主副本），不进仓库
+/.purge-backup/
