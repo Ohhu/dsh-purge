@@ -1,3 +1,31 @@
+# 1.1.72
+
+## 中文
+
+- 版本 **1.1.72**：对齐 DeepSeek Harness **0.2.1-rc.5**。
+- 新增目标键 `harness-dev-context` / `sandbox`。rc.3 起 Web 面提示词整段搬进 `@deepseek-ai/dsh-harness-dev-context`，`dsh-web-app` 只剩 URL 变量。
+- **#32 / #53** 改指 `harness-dev-context`，补 rc.5 的 `WEB_SURFACE_PROMPT`、`LEGACY_WEB_SURFACE.prefix`、`Current DeepSeek Harness Web GUI URL:` 与两处 `description`。
+- **#40** 补 rc.5 的 complete 分支：contexts 已收成 `requiredContexts` 过滤，新正则保留这段只换 sections。
+- **#4** 补 `prefix:` 标量（10 / 6 空格）两种预设布局；`personaPrefix` 在 rc.5 已不存在。
+- **#36** 补 `sandboxPermissionsDescription()` 的 rc.5 原文，并把 `dsh-sandbox` 纳入目标。
+- **#57** 补 responses 通路的 `instructionRole`（rc.5 变量改名）。
+- **#62** 补打包入口的 `void 0` 与 4-tab `case "unavailable"` 两种写法。
+- **#77** 补 rc.5 的 `if (this.revised.size > 0)` 守卫。
+- **#21 / #24 / #50** 官方已跟上或本就达成，判据改为软完成，状态显示 `already` 而不是 `pending`。
+- 全量落地校验：77 条补丁在 rc.5 上 0 条 `pattern_not_found`，8 条桌面面 `na`；打出来的 50 个文件全部 `node --check` 通过。
+
+## English
+
+- **1.1.72**: aligned with DeepSeek Harness **0.2.1-rc.5**.
+- New target keys `harness-dev-context` / `sandbox`. Since rc.3 the whole web-surface prompt lives in `@deepseek-ai/dsh-harness-dev-context`; `dsh-web-app` only keeps the URL variable.
+- **#32 / #53** now target `harness-dev-context`: `WEB_SURFACE_PROMPT`, `LEGACY_WEB_SURFACE.prefix`, `Current DeepSeek Harness Web GUI URL:` and both `description` lines.
+- **#40** gains the rc.5 complete branch, whose contexts are folded into a `requiredContexts` filter; the new pattern keeps that line and only rewrites sections.
+- **#4** covers both `prefix:` scalar layouts (10 / 6 spaces); `personaPrefix` no longer exists in rc.5.
+- **#36** carries the rc.5 `sandboxPermissionsDescription()` text and targets `dsh-sandbox`.
+- **#57** covers the responses `instructionRole` rename. **#62** covers `void 0` and the 4-tab `case "unavailable"`. **#77** covers the `revised.size > 0` guard.
+- **#21 / #24 / #50** are upstream-satisfied now and settle as `already` instead of `pending`.
+- Verified end to end: zero `pattern_not_found` on rc.5 with 8 desktop-only `na`; all 50 patched files pass `node --check`.
+
 # 1.1.71
 
 ## 中文
